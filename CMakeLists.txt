@@ -22,3 +22,5 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
 	${OpenCV_LIBS}
 )
+
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")

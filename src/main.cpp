@@ -10,6 +10,7 @@
 #include <list>
 #include <mutex>
 #include <regex>
+#include <condition_variable>
 
 struct settings
 {
@@ -75,8 +76,8 @@ int main(int argc, char **argv)
 	std::vector<cv::Mat> filtered;
 
 	cv::VideoCapture capture(settings.filename);
-	auto w = capture.get(CV_CAP_PROP_FRAME_WIDTH);
-	auto h = capture.get(CV_CAP_PROP_FRAME_HEIGHT);
+	auto w = capture.get(cv::CAP_PROP_FRAME_WIDTH);
+	auto h = capture.get(cv::CAP_PROP_FRAME_HEIGHT);
 
 	bool input_complete = false;
 	std::mutex input_mutex;
@@ -105,7 +106,7 @@ int main(int argc, char **argv)
 
 			// Convert to LAB color space
 			input.convertTo(input, CV_32FC3, 1.0 / 255.0f);
-			cv::cvtColor(input, input, CV_BGR2Lab);
+			cv::cvtColor(input, input, cv::COLOR_BGR2Lab);
 
 			// Pyramid decomposition
 			std::vector<cv::Mat> pyramid;
@@ -157,10 +158,10 @@ int main(int argc, char **argv)
 			auto amplified = std::get<1>(output);
 
 			// Convert back to RGB color space
-			cv::cvtColor(normal, normal, CV_Lab2BGR);
+			cv::cvtColor(normal, normal, cv::COLOR_Lab2BGR);
 			normal.convertTo(normal, CV_8UC3, 255.0, 1.0 / 255.0);
 
-			cv::cvtColor(amplified, amplified, CV_Lab2BGR);
+			cv::cvtColor(amplified, amplified, cv::COLOR_Lab2BGR);
 			amplified.convertTo(amplified, CV_8UC3, 255.0, 1.0 / 255.0);
 
 			// Display
